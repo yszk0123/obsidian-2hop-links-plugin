@@ -6,6 +6,7 @@ export interface TwohopPluginSettings {
   boxWidth: string;
   boxHeight: string;
   excludePattern: string;
+  showTagLinks: boolean;
 }
 
 export const DEFAULT_SETTINGS: TwohopPluginSettings = {
@@ -13,6 +14,7 @@ export const DEFAULT_SETTINGS: TwohopPluginSettings = {
   boxWidth: "162px",
   boxHeight: "178px",
   excludePattern: "",
+  showTagLinks: true,
 };
 
 export class TwohopSettingTab extends PluginSettingTab {
@@ -80,5 +82,18 @@ export class TwohopSettingTab extends PluginSettingTab {
             await this.plugin.saveSettings();
           })
       );
+
+    new Setting(containerEl)
+      .setName("Show Tag Links")
+      .setDesc("Show tag links")
+      .addToggle((toggle) => {
+        toggle
+          .setValue(this.plugin.settings.showTagLinks)
+          .onChange(async (value) => {
+            this.plugin.settings.showTagLinks = value;
+            await this.plugin.saveSettings();
+          });
+        toggle.setValue;
+      });
   }
 }

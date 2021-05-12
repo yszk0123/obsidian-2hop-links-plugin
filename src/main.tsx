@@ -5,7 +5,7 @@ import { FileEntity } from "./model/FileEntity";
 import { TwohopLink } from "./model/TwohopLink";
 import TwohopLinksRootView from "./ui/TwohopLinksRootView";
 import { TagLinks } from "./model/TagLinks";
-import { path2linkText, removeBlockReference } from "./utils";
+import { path2linkText, removeBlockReference, buildRegExpTest } from "./utils";
 import {
   DEFAULT_SETTINGS,
   TwohopPluginSettings,
@@ -308,7 +308,9 @@ export default class TwohopLinksPlugin extends Plugin {
       }
     }
 
+    const exclude = buildRegExpTest(this.settings.excludePattern);
     return Object.keys(links[activeFile.path])
+      .filter((path) => !exclude(path))
       .map((path) => {
         return twoHopLinks[path]
           ? new TwohopLink(
@@ -327,6 +329,7 @@ export default class TwohopLinksPlugin extends Plugin {
   ): Record<string, string[]> {
     const result: Record<string, string[]> = {};
     const activeFileLinks = new Set(Object.keys(links[activeFile.path]));
+    const exclude = buildRegExpTest(this.settings.excludePattern);
 
     for (const src of Object.keys(links)) {
       if (src == activeFile.path) {
@@ -335,7 +338,13 @@ export default class TwohopLinksPlugin extends Plugin {
       if (links[src] == null) {
         continue;
       }
+      if (exclude(src)) {
+        continue;
+      }
       for (const dest of Object.keys(links[src])) {
+        if (exclude(src)) {
+          continue;
+        }
         if (activeFileLinks.has(dest)) {
           if (!result[dest]) {
             result[dest] = [];
@@ -389,7 +398,9 @@ export default class TwohopLinksPlugin extends Plugin {
     } else {
       if (activeFileCache.links != null) {
         const seen = new Set<string>();
+        const exclude = buildRegExpTest(this.settings.excludePattern);
         return activeFileCache.links
+          .filter((cache) => !exclude(cache.link))
           .map((it) => {
             const key = removeBlockReference(it.link);
             if (!seen.has(key)) {
@@ -412,8 +423,12 @@ export default class TwohopLinksPlugin extends Plugin {
     const name = activeFile.path;
     const resolvedLinks: Record<string, Record<string, number>> =
       this.app.metadataCache.resolvedLinks;
+    const exclude = buildRegExpTest(this.settings.excludePattern);
     const result: FileEntity[] = [];
     for (const src of Object.keys(resolvedLinks)) {
+      if (exclude(src)) {
+        continue;
+      }
       for (const dest of Object.keys(resolvedLinks[src])) {
         if (dest == name) {
           const linkText = path2linkText(src);

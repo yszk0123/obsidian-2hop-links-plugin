@@ -133,7 +133,9 @@ export default class TwohopLinksPlugin extends Plugin {
 
     const backwardLinks = this.getBackLinks(activeFile, forwardLinkSet);
 
-    const tagLinksList = this.getTagLinksList(activeFile, activeFileCache);
+    const tagLinksList = this.settings.showTagLinks
+      ? this.getTagLinksList(activeFile, activeFileCache)
+      : [];
 
     // insert links to the footer
     for (const container of this.getContainerElements(markdownView)) {

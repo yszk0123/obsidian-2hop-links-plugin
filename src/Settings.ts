@@ -5,12 +5,14 @@ export interface TwohopPluginSettings {
   putOnTop: boolean;
   boxWidth: string;
   boxHeight: string;
+  excludePattern: string;
 }
 
 export const DEFAULT_SETTINGS: TwohopPluginSettings = {
   putOnTop: false,
   boxWidth: "162px",
   boxHeight: "178px",
+  excludePattern: "",
 };
 
 export class TwohopSettingTab extends PluginSettingTab {
@@ -65,5 +67,18 @@ export class TwohopSettingTab extends PluginSettingTab {
             await this.plugin.saveSettings();
           });
       });
+
+    new Setting(containerEl)
+      .setName("Exclude Pattern")
+      .setDesc("Pages to exclude")
+      .addText((text) =>
+        text
+          .setPlaceholder(DEFAULT_SETTINGS.excludePattern)
+          .setValue(this.plugin.settings.excludePattern)
+          .onChange(async (value) => {
+            this.plugin.settings.excludePattern = value;
+            await this.plugin.saveSettings();
+          })
+      );
   }
 }

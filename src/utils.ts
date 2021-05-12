@@ -7,3 +7,12 @@ export function path2linkText(path: string): string {
 export function removeBlockReference(src: string): string {
   return src.replace(/#.*$/, "");
 }
+
+export function buildRegExpTest(pattern: string): (s: string) => boolean {
+  try {
+    const regexp = new RegExp(pattern);
+    return (s: string) => regexp.test(s);
+  } catch {
+    return () => true;
+  }
+}

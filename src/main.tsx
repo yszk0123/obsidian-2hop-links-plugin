@@ -105,6 +105,7 @@ export default class TwohopLinksPlugin extends Plugin {
 
     const skip = buildRegExpTest(this.settings.skipPattern, false);
     if (skip(activeFile.path)) {
+      this.removeTwohopLinks();
       return;
     }
 

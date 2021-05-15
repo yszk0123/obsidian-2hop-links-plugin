@@ -6,6 +6,7 @@ export interface TwohopPluginSettings {
   boxWidth: string;
   boxHeight: string;
   excludePattern: string;
+  skipPattern: string;
   showTagLinks: boolean;
 }
 
@@ -14,6 +15,7 @@ export const DEFAULT_SETTINGS: TwohopPluginSettings = {
   boxWidth: "162px",
   boxHeight: "178px",
   excludePattern: "",
+  skipPattern: "",
   showTagLinks: true,
 };
 
@@ -79,6 +81,19 @@ export class TwohopSettingTab extends PluginSettingTab {
           .setValue(this.plugin.settings.excludePattern)
           .onChange(async (value) => {
             this.plugin.settings.excludePattern = value;
+            await this.plugin.saveSettings();
+          })
+      );
+
+    new Setting(containerEl)
+      .setName("Skip Path Pattern")
+      .setDesc("Pages to skip")
+      .addText((text) =>
+        text
+          .setPlaceholder(DEFAULT_SETTINGS.skipPattern)
+          .setValue(this.plugin.settings.skipPattern)
+          .onChange(async (value) => {
+            this.plugin.settings.skipPattern = value;
             await this.plugin.saveSettings();
           })
       );

@@ -103,6 +103,11 @@ export default class TwohopLinksPlugin extends Plugin {
       return; // Currently focusing window is not related to a file.
     }
 
+    const skip = buildRegExpTest(this.settings.skipPattern);
+    if (skip(activeFile.path)) {
+      return;
+    }
+
     const activeFileCache: CachedMetadata =
       this.app.metadataCache.getFileCache(activeFile);
 

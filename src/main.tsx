@@ -103,7 +103,7 @@ export default class TwohopLinksPlugin extends Plugin {
       return; // Currently focusing window is not related to a file.
     }
 
-    const skip = buildRegExpTest(this.settings.skipPattern);
+    const skip = buildRegExpTest(this.settings.skipPattern, false);
     if (skip(activeFile.path)) {
       return;
     }
@@ -315,7 +315,7 @@ export default class TwohopLinksPlugin extends Plugin {
       }
     }
 
-    const exclude = buildRegExpTest(this.settings.excludePattern);
+    const exclude = buildRegExpTest(this.settings.excludePattern, false);
     return Object.keys(links[activeFile.path])
       .filter((path) => !exclude(path))
       .map((path) => {
@@ -336,7 +336,7 @@ export default class TwohopLinksPlugin extends Plugin {
   ): Record<string, string[]> {
     const result: Record<string, string[]> = {};
     const activeFileLinks = new Set(Object.keys(links[activeFile.path]));
-    const exclude = buildRegExpTest(this.settings.excludePattern);
+    const exclude = buildRegExpTest(this.settings.excludePattern, false);
 
     for (const src of Object.keys(links)) {
       if (src == activeFile.path) {
@@ -405,7 +405,7 @@ export default class TwohopLinksPlugin extends Plugin {
     } else {
       if (activeFileCache.links != null) {
         const seen = new Set<string>();
-        const exclude = buildRegExpTest(this.settings.excludePattern);
+        const exclude = buildRegExpTest(this.settings.excludePattern, false);
         return activeFileCache.links
           .filter((cache) => !exclude(cache.link))
           .map((it) => {
@@ -430,7 +430,7 @@ export default class TwohopLinksPlugin extends Plugin {
     const name = activeFile.path;
     const resolvedLinks: Record<string, Record<string, number>> =
       this.app.metadataCache.resolvedLinks;
-    const exclude = buildRegExpTest(this.settings.excludePattern);
+    const exclude = buildRegExpTest(this.settings.excludePattern, false);
     const result: FileEntity[] = [];
     for (const src of Object.keys(resolvedLinks)) {
       if (exclude(src)) {

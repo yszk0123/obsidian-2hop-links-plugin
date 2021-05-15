@@ -8,11 +8,17 @@ export function removeBlockReference(src: string): string {
   return src.replace(/#.*$/, "");
 }
 
-export function buildRegExpTest(pattern: string): (s: string) => boolean {
+export function buildRegExpTest(
+  pattern: string,
+  fallback: boolean
+): (s: string) => boolean {
+  if (pattern === "") {
+    return () => fallback;
+  }
   try {
     const regexp = new RegExp(pattern);
     return (s: string) => regexp.test(s);
   } catch {
-    return () => true;
+    return () => fallback;
   }
 }

@@ -34,9 +34,12 @@ export default class LinkView extends React.Component<
         className={"twohop-links-box"}
         onClick={async () => this.props.onClick(this.props.fileEntity)}
         // To overwrite CodeMirror's handler
-        onMouseDown={async (event) =>
-          event.button == 0 && this.props.onClick(this.props.fileEntity)
-        }
+        onMouseDown={async (event) => {
+          if (event.button === 0) {
+            event.preventDefault();
+            event.stopPropagation();
+          }
+        }}
         style={{ width: this.props.boxWidth, height: this.props.boxHeight }}
       >
         <div className="twohop-links-box-title">
